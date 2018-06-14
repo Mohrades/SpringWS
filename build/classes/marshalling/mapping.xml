@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "http://castor.org/mapping.dtd">
+<mapping>
+    <class name="tudu.domain.model.TodoList">
+        <map-to xml="TodoList" ns-uri="http://sourceforge.net/tudu/schemas"/>
+        <field name="listId" type="java.lang.String">
+            <bind-xml name="ListId" node="element"/>
+         </field>
+        <field name="name" type="java.lang.String">
+            <bind-xml name="Name" node="element"/>
+        </field>
+        <field name="rssAllowed" type="java.lang.Boolean">
+            <bind-xml name="RssAllowed" node="element"/>
+        </field>
+        <field name="lastUpdate" type="java.util.Date">
+            <bind-xml name="LastUpdate" node="element"/>
+        </field>
+    </class>
+</mapping>

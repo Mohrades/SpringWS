@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:sws="http://www.springframework.org/schema/web-services"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+  http://www.springframework.org/schema/web-services
+  http://www.springframework.org/schema/web-services/web-services-2.0.xsd
+  http://www.springframework.org/schema/context
+  http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+  
+  <context:component-scan base-package="com.mycompany.hr.ws"/>
+  <context:component-scan base-package="exceptions"/>
+  <context:component-scan base-package="com.mycompany.hr.service"/>
+  <sws:annotation-driven/>
+  
+  <bean id="schema" class="org.springframework.xml.xsd.SimpleXsdSchema">
+	<property name="xsd" value="/WEB-INF/hr.xsd" />
+  </bean>
+  
+  	<sws:interceptors>
+  	    <bean id="validatingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
+			<property name="xsdSchema" ref="schema" />
+			<property name="validateRequest" value="true" />
+			<property name="validateResponse" value="false" />
+		</bean>
+  	    <bean class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor">
+  	    	<property name="logRequest" value="true"></property>
+  	    	<property name="logResponse" value="false"></property>
+  	 	</bean>
+  	 	<bean id="wsSecurityInterceptor" class="org.springframework.ws.soap.security.xwss.XwsSecurityInterceptor">
+        	<property name="policyConfiguration" value="classpath:security/securityPolicy.xml"/>
+        	<property name="callbackHandlers">
+            	<list>
+            	    <!-- <ref bean="keyStoreHandler"/> -->
+                	<!-- <ref bean="certificateHandler"/>
+                	<ref bean="authenticationHandler"/> -->
+                	<!-- <ref bean="springSecurityHandler"/> -->
+                	<ref bean="authenticationPasswordValidationHandler"/>
+                	<!-- <ref bean="authenticationSpringSecurityHandler"/> -->
+            	</list>
+        	</property>
+    	</bean>
+  		<bean class="intercepteurs.MyGlobalInterceptor"/>
+  		<sws:payloadRoot namespaceUri="http://mycompany.com/hr/schemas">
+    		<bean class="intercepteurs.MyPayloadRootInterceptor"/>
+  		</sws:payloadRoot>
+  		<sws:soapAction value="http://www.example.com/SoapAction">
+    		<bean class="intercepteurs.MySoapActionInterceptor1"/>
+    		<ref bean="mySoapActionInterceptor2"/>
+  		</sws:soapAction>
+	</sws:interceptors>
+	
+	<bean id="mySoapActionInterceptor2" class="intercepteurs.MySoapActionInterceptor2"/>
+  
+  <sws:dynamic-wsdl id="holiday" portTypeName="HumanResource" locationUri="/holidayService/" targetNamespace="http://mycompany.com/hr/definitions" requestSuffix="Request" responseSuffix="Response"> 
+     <sws:xsd location="/WEB-INF/hr.xsd"/>                                                  
+  </sws:dynamic-wsdl>
+  
+  <!-- <bean class="org.springframework.ws.server.endpoint.mapping.PayloadRootQNameEndpointMapping">
+      	<property name="interceptors">
+			<list>
+				<ref local="validatingInterceptor" />
+			</list>
+		</property>
+        <property name="mappings">
+            <props>
+                <prop key="{http://mycompany.com/hr/schemas}HolidayRequest">
+                    jDomHolidayRequestEndpoint
+                </prop>
+                <prop key="{http://mycompany.com/hr/schemas}HolidayRequest">
+                    marshallingHolydayRequestEndpoint
+                </prop>
+            </props>
+        </property>
+  </bean> -->
+  
+  	<!-- <bean id="validatingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
+		<property name="xsdSchema" ref="schema" />
+		<property name="validateRequest" value="true" />
+		<property name="validateResponse" value="true" />
+	</bean> -->
+  
+   <bean id="jDomHolydayRequestEndpoint" class="com.mycompany.hr.ws.JDomHolidayEndpoint">
+        <property name="humanResourceService" ref="stubHumanResourceService"/>
+   </bean>
+   <!-- <bean id="marshallingHolydayRequestEndpoint" class="com.mycompany.hr.ws.MarshallingHolydayRequestEndpoint">
+        <property name="humanResourceService" ref="stubHumanResourceService"/>
+        <property name="marshaller" ref="castorMarshaller"/>
+    	<property name="unmarshaller" ref="castorMarshaller"/>
+   </bean>
+   <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
+        <property name="mappingLocation" value="classpath:/marshalling/mapping.xml"/>
+   </bean> -->
+  
+  <!-- <bean id="exceptionResolver" class="org.springframework.ws.soap.server.endpoint.SoapFaultMappingExceptionResolver">
+        <property name="defaultFault" value="SERVER"/>
+        <property name="exceptionMappings">
+            <props>
+       			<prop key="Exception">
+     				CLIENT,Invalid request,en
+            	</prop>
+            	<prop key="Exception1">exception1</prop>
+       			<prop key="Exception2">exception2</prop>
+     		</props>
+            <value>
+                org.springframework.oxm.ValidationFailureException=CLIENT,Invalid request
+            </value>
+        </property>
+  </bean> -->
+  
+ <bean id="exceptionResolver" class="org.springframework.ws.soap.server.endpoint.SoapFaultAnnotationExceptionResolver" />
+ 
+ <!-- <bean id="keyStore" class="org.springframework.ws.soap.security.support.KeyStoreFactoryBean">
+    <property name="password" value="password"/>
+    <property name="location" value="classpath:keystore.jks"/>
+ </bean>
+ 
+ <bean id="keyStoreHandler" class="org.springframework.ws.soap.security.xwss.callback.KeyStoreCallbackHandler">
+     <property name="keyStore" ref="keyStore"/>
+     <property name="privateKeyPassword" value="changeit"/>
+ </bean> -->
+ 
+  <bean id="springSecurityHandler" class="org.springframework.ws.soap.security.xwss.callback.SpringPlainTextPasswordValidationCallbackHandler">
+    <property name="authenticationManager" ref="authenticationManager"/>
+  </bean>
+  
+   <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+      <property name="providers">
+          <bean class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+              <property name="userDetailsService" ref="userDetailsService"/>
+          </bean>
+      </property>
+  </bean>
+ 
+ <bean id="authenticationPasswordValidationHandler" class="org.springframework.ws.soap.security.xwss.callback.SimplePasswordValidationCallbackHandler">
+    <property name="users">
+        <props>
+            <prop key="Bert">Ernie</prop>
+            <prop key="Mohrades">ADWEG</prop>
+        </props>
+    </property>
+ </bean>
+ 
+ <bean id="authenticationSpringSecurityHandler" class="org.springframework.ws.soap.security.xwss.callback.SpringDigestPasswordValidationCallbackHandler">
+    <property name="userDetailsService" ref="userDetailsService"/>
+ </bean>
+ 
+ <bean id="userDetailsService" class="com.mycompany.app.dao.UserDetailService" />
+ 
+  <!-- <bean id="keyStoreHandler" class="org.springframework.ws.soap.security.xwss.callback.KeyStoreCallbackHandler">
+      <property name="trustStore" ref="trustStore"/>
+  </bean>
+  
+  <bean id="trustStore" class="org.springframework.ws.soap.security.support.KeyStoreFactoryBean">
+      <property name="location" value="classpath:security/certificate/truststore.jks"/>
+      <property name="password" value="changeit"/>
+  </bean>
+  
+   <bean id="keyStoreOutMessageHandler" class="org.springframework.ws.soap.security.xwss.callback.KeyStoreCallbackHandler">
+        <property name="keyStore" ref="keyStore"/>
+        <property name="privateKeyPassword" value="changeit"/>
+    </bean>
+    
+    <bean id="keyStore" class="org.springframework.ws.soap.security.support.KeyStoreFactoryBean">
+        <property name="location" value="classpath:security/certificate/keystore.jks"/>
+        <property name="password" value="changeit"/>
+    </bean> -->
+  
+</beans>

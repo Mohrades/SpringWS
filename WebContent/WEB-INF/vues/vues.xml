@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/context
+  http://www.springframework.org/schema/context/spring-context.xsd">
+ 
+  <bean id="login" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/login.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="redirection" class="org.springframework.web.servlet.view.RedirectView">
+     <property name="url">
+      <value>interface</value>
+    </property>
+    <property name="contextRelative">
+      <value>true</value>
+    </property>
+    <property name="http10Compatible">
+      <value>false</value>
+    </property>
+   </bean>
+   
+   <bean id="interface" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/interface.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="utilisateurs" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/utilisateurs.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="offres" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/offres.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="upload" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/upload.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="categorie" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/categorie.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="filtrage" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/filtrage.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="journaux" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/journaux.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="welcome" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/welcome.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="menu" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/menu.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="advertising" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/advertising.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="formulaire" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/formulaire.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="formAction" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/formAction.jsp</value>
+    </property>
+   </bean>
+   
+   <bean id="souswelcome" class="org.springframework.web.servlet.view.JstlView">
+     <property name="url">
+      <value>/WEB-INF/vues/pages/souswelcome.jsp</value>
+    </property>
+   </bean>
+   
+ </beans>
